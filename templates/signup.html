@@ -1,0 +1,18 @@
+{% extends "layout_app.html" %}
+
+{% block main %}
+    <div class="container" style="background-color: rgb(228, 222, 222); padding-top: 5%; margin-top: 15%; padding-bottom: 5%; border-radius: 30px">
+    <div class="row text-center mb-5" style=" font-size: 2em;">
+        <p>Give your family a unique name</p>
+    </div>
+    <div class="row text-center mt-4">
+        <form action="/signup" method="post">
+            <input name="familyName" placeholder="Family Name" required type="text" class="mb-4 form-control mx-auto w-auto" style="border-radius: 60px; width:500px;">
+            <button onclick="" class="btn btn-primary" style="padding: 1% 15% 1% 15%; border-radius:60px;">NEXT</button> 
+        </form>
+    </div>
+    <div class="row text-end mb-3 mt-3">
+        <span>Step 1 of </span>
+    </div>
+</div>
+{% endblock %}
