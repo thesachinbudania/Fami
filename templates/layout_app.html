@@ -12,21 +12,21 @@
   <body style="background-color: rgba(0, 0, 0, 0.863);font-family: 'Balsamiq Sans', cursive; background-image: url(../static/foster-family.png); background-size: 100px; background-repeat: repeat;">
     <nav class="navbar navbar-expand-lg bg-primary">
       <div class="container-fluid">
-        <a class="navbar-brand text-light" href="#"><img src="../static/image-removebg-preview.png" alt="fami-logo" height="100px" width="160px"> </a>
+        <a class="navbar-brand text-light" href="/"><img src="../static/image-removebg-preview.png" alt="fami-logo" height="100px" width="160px"> </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
           <div class="navbar-nav">
-            <a class="nav-link active" aria-current="page" href="#">Home</a>
-            <a class="nav-link text-light" href="#">Features</a>
-            <a class="nav-link text-light" href="#">Pricing</a>
-            <a class="nav-link text-light">Disabled</a>
+            <a class="nav-link text-light" href="/">Home</a>
+            <a class="nav-link text-light" href="/login">Login</a>
+            <a class="nav-link text-light" href="/signup">Sign Up</a>
+            <a class="nav-link text-light" href="/docs">Docs</a>
           </div>
         </div>
       </div>
     </nav>
-    <main class="container-fluid justify-content-center">
+    <main class="container justify-content-center" style="max-width: 500px;">
       {% block main %}{% endblock %}
     </main>
 

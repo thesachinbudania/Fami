@@ -1,0 +1,31 @@
+{% extends "layout_app.html" %}
+
+{% block main %}
+<div class="container" style="background-color: rgb(228, 222, 222); padding-top: 5%; width: auto; margin-top: 50px; padding-bottom: 30px; border-radius: 30px">
+    <div class="row text-center mb-2" style=" font-size: 2em;">
+        <p>Login with the credentials you used at the time of signing up</p>
+    </div>
+    <div class="row text-center mb-3">
+        <p style="opacity: 0.7; border-left: 10px solid red; background-color: rgba(255, 193, 7, 0.7); padding-top: 4%; padding-bottom: 4%;" id="error">{{error}}</p>
+    </div>
+    <div class="row text-center mt-4">
+        <form action="/login" method="post">
+            <input name="familyNameUq" placeholder="Your Family Name" required type="text" class="mb-4 form-control mx-auto w-auto" style="border-radius: 60px; width: 250px !important;">
+            <input type="password" required id="password" placeholder="Choose a password" name="password" class="mb-4 form-control mx-auto w-auto" style="border-radius: 60px; width: 250px !important;">
+            <button type="submit" class="btn btn-primary" style="border-radius:60px; width: 250px">Log In</button> 
+        </form>
+    </div>
+</div>
+<script>
+    let error = document.getElementById("error");
+    if (error.innerHTML) {
+        error.style.display = "block";
+    }
+    else {
+        error.style.display = "none"
+    }
+
+</script>
+
+
+{% endblock %}

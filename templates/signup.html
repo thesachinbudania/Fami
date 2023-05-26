@@ -1,7 +1,7 @@
 {% extends "layout_app.html" %}
 
 {% block main %}
-    <div class="container" style="background-color: rgb(228, 222, 222); padding-top: 5%; margin-top: 15%; padding-bottom: 5%; border-radius: 30px">
+    <div class="container" style="background-color: rgb(228, 222, 222); padding-top: 5%; width: auto; margin-top: 50px; padding-bottom: 30px; border-radius: 30px">
     <div class="row text-center mb-5" style=" font-size: 2em;">
         <p>Let's get your family registered</p>
     </div>
@@ -10,12 +10,12 @@
     </div>
     <div class="row text-center mt-4">
         <form action="/signup" method="post" id="signupForm">
-            <input name="familyNameUq" placeholder="Unique Family Name" required type="text" class="mb-4 form-control mx-auto w-auto" style="border-radius: 60px; width: 250px !important;">
-            <input type="number" placeholder="No. of family members" required class="mb-4 form-control mx-auto w-auto" style="border-radius: 60px; width: 250px !important;" name="familyMembers">
-            <input type="text" required placeholder="Family Nick Name" required class="mb-4 form-control mx-auto w-auto" style="border-radius: 60px; width: 250px !important;" name="familyNN">
+            <input name="familyNameUq" id="familyNameUq" placeholder="Unique Family Name" required type="text" class="mb-4 form-control mx-auto w-auto" style="border-radius: 60px; width: 250px !important;">
+            <input type="number" placeholder="No. of family members" required class="mb-4 form-control mx-auto w-auto" style="border-radius: 60px; width: 250px !important;" name="familyMembers" min="2" id="familyMembers">
+            <input type="text" required placeholder="Family Nick Name" required class="mb-4 form-control mx-auto w-auto" style="border-radius: 60px; width: 250px !important;" name="familyNN" id="familyNN">
             <input type="password" required id="password" placeholder="Choose a password" name="password" class="mb-4 form-control mx-auto w-auto" style="border-radius: 60px; width: 250px !important;">
             <input type="password" id="confirmPassword" required placeholder="Confirm password" id="confirmPassword" class="mb-4 form-control mx-auto w-auto" style="border-radius: 60px; width: 250px !important;">
-            <button type="button" onclick="formChecker()" class="btn btn-primary" style="padding: 1% 15% 1% 15%; border-radius:60px; width: 250px;">Sign Up</button> 
+            <button type="button" onclick="formChecker()" class="btn btn-primary" style="border-radius:60px; width: 250px;">Sign Up</button> 
         </form>
     </div>
     <div class="row text-end mb-3 mt-3">
@@ -31,17 +31,32 @@
         error.style.display = "none"
     }
 
-    let password = document.getElementById("password").value;
-    let confirmPassword = document.getElementById("confirmPassword").value;
     function formChecker(){
         let password = document.getElementById("password").value;
         let confirmPassword = document.getElementById("confirmPassword").value;
-        if (password === confirmPassword) {
-            document.getElementById("signupForm").submit();
+        let familyMembers = document.getElementById("familyMembers").value;
+        if (document.getElementById("familyNameUq").value == "") {
+            error.innerHTML = "Please fill all the fields";
+            error.style.display = "block";
         }
-        else {
+        else if (Number(password.length) < 8) {
+            error.innerHTML = "Password should be atleast 8 characters long";
+            error.style.display = "block";
+        }
+        else if (password != confirmPassword) {
             error.innerHTML = "Password and Confirm Password don't match";
             error.style.display = "block";
+        }
+        else if (Number(familyMembers) < 2) {
+            error.innerHTML = "No. of family members can't be less than 2";
+            error.style.display = "block";
+        }
+        else if (document.getElementById("familyNN").value == "") {
+            error.innerHTML = "Family Nick Name can't be empty";
+            error.style.display = "block";
+        }
+        else {
+            document.getElementById("signupForm").submit();
         }
     }
 </script>
