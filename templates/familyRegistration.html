@@ -1,0 +1,24 @@
+{% extends "layout_app.html" %}
+
+{% block main %}
+    <div class="container" style="background-color: rgb(228, 222, 222); padding-top: 5%; width: auto; margin-top: 50px; padding-bottom: 30px; border-radius: 30px">
+    <div class="row text-center mb-5" style=" font-size: 2em;">
+        <p>Let's get your family members attached to the account</p>
+    </div>
+    <div class="row text-center mb-3">
+        <p style="opacity: 0.7; border-left: 10px solid rgb(0, 0, 0); background-color: rgba(0, 128, 248, 0.527); padding-top: 4%; padding-bottom: 4%;" id="error">Please provide details for Member {{memberNo}}</p>
+    </div>
+    <div class="row text-center mt-4">
+        <form action="/familyRegistration" method="post">
+            <input name="memberName" type="text" required placeholder="Member Name" class="form-control mx-auto mb-3" style="width:250px; border-radius:60px" >
+            <input name="contact" type="text" required placeholder="Phone No." class="form-control mx-auto mb-3" style="width:250px; border-radius:60px" >
+            <input name="email" type="email" required placeholder="E-mail" class="form-control mx-auto mb-3" style="width:250px; border-radius:60px" >
+            <button class="btn btn-primary" style="border-radius: 60px; width:250px;">Register User</button>
+        </form>
+    </div>
+    <div class="row text-end mb-3 mt-3">
+        <span style="padding-right:5%">Step 2 of 2</span>
+    </div>
+</div>
+
+{% endblock %}
