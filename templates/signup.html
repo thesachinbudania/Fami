@@ -3,16 +3,46 @@
 {% block main %}
     <div class="container" style="background-color: rgb(228, 222, 222); padding-top: 5%; margin-top: 15%; padding-bottom: 5%; border-radius: 30px">
     <div class="row text-center mb-5" style=" font-size: 2em;">
-        <p>Give your family a unique name</p>
+        <p>Let's get your family registered</p>
+    </div>
+    <div class="row text-center mb-3">
+        <p style="opacity: 0.7; border-left: 10px solid red; background-color: rgba(255, 193, 7, 0.7); padding-top: 4%; padding-bottom: 4%;" id="error">{{error}}</p>
     </div>
     <div class="row text-center mt-4">
-        <form action="/signup" method="post">
-            <input name="familyName" placeholder="Family Name" required type="text" class="mb-4 form-control mx-auto w-auto" style="border-radius: 60px; width:500px;">
-            <button onclick="" class="btn btn-primary" style="padding: 1% 15% 1% 15%; border-radius:60px;">NEXT</button> 
+        <form action="/signup" method="post" id="signupForm">
+            <input name="familyNameUq" placeholder="Unique Family Name" required type="text" class="mb-4 form-control mx-auto w-auto" style="border-radius: 60px; width: 250px !important;">
+            <input type="number" placeholder="No. of family members" required class="mb-4 form-control mx-auto w-auto" style="border-radius: 60px; width: 250px !important;" name="familyMembers">
+            <input type="text" required placeholder="Family Nick Name" required class="mb-4 form-control mx-auto w-auto" style="border-radius: 60px; width: 250px !important;" name="familyNN">
+            <input type="password" required id="password" placeholder="Choose a password" name="password" class="mb-4 form-control mx-auto w-auto" style="border-radius: 60px; width: 250px !important;">
+            <input type="password" id="confirmPassword" required placeholder="Confirm password" id="confirmPassword" class="mb-4 form-control mx-auto w-auto" style="border-radius: 60px; width: 250px !important;">
+            <button type="button" onclick="formChecker()" class="btn btn-primary" style="padding: 1% 15% 1% 15%; border-radius:60px; width: 250px;">Sign Up</button> 
         </form>
     </div>
     <div class="row text-end mb-3 mt-3">
-        <span>Step 1 of </span>
+        <span style="padding-right:5%">Step 1 of 2</span>
     </div>
 </div>
+<script>
+    let error = document.getElementById("error");
+    if (error.innerHTML) {
+        error.style.display = "block";
+    }
+    else {
+        error.style.display = "none"
+    }
+
+    let password = document.getElementById("password").value;
+    let confirmPassword = document.getElementById("confirmPassword").value;
+    function formChecker(){
+        let password = document.getElementById("password").value;
+        let confirmPassword = document.getElementById("confirmPassword").value;
+        if (password === confirmPassword) {
+            document.getElementById("signupForm").submit();
+        }
+        else {
+            error.innerHTML = "Password and Confirm Password don't match";
+            error.style.display = "block";
+        }
+    }
+</script>
 {% endblock %}
