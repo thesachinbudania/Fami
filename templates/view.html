@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+
+{% block main %}
+    <div class="container-fluid mt-4" style="background-color: white; border-radius: 25px;">
+        <div class="row" style="font-size: 2em;">
+            <p>Viewing <span class="text-primary">To Be Remembered</span> for {{name}} </p>
+        </div>
+        {% for c in data %}
+            <div class="row" style="font-size: 1.7em;">
+                <span class="text-primary">{{loop.index}}. To Be Remembered of</span>
+            </div>
+            <div class="row" style="font-size: 1.7em; border-bottom:3px solid black;">
+                <span>{{c['task']}}</span>
+            </div>
+            <div class="row" style="font-size: 1.7em;">
+                <span class="text-primary">On</span>
+            </div>
+            <div class="row" style="font-size: 1.7em; border-bottom:3px solid black;">
+                <span>{{c['day']}}/{{c['month']}}</span>
+            </div>
+            <div class="row" style="font-size: 1.7em;">
+                <span class="text-primary">At</span>
+            </div>
+            <div class="row">
+                <span class="mb-4" style="font-size: 1.7em; border-bottom:3px solid #0d6efd">{{c['hour']}}:{{c['minute']}}</span>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

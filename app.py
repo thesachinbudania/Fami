@@ -1,6 +1,8 @@
 from flask import Flask, request, render_template, redirect, session, make_response
 from werkzeug.security import check_password_hash, generate_password_hash
 from cs50 import SQL
+from datetime import datetime
+import calendar
 
 # setting global variables for the required things
 familyMembers = 0
@@ -43,7 +45,7 @@ def main():
                 # storing the id in the session for future references
                 id = data[0]['id']
                 session['id'] = id
-                return render_template("dashboard.html")
+                return redirect("/dashboard")
 
 
 @app.route("/signup", methods = ["Post", "GET"])
@@ -135,14 +137,61 @@ def login():
             id = data[0]['id']
             session['id'] = id
             # setting up the cookies so that the user don't need to login again
-            resp = make_response(render_template("dashboard.html"))
+            resp = make_response(redirect("/dashboard"))
             resp.set_cookie('user', value=user)
             resp.set_cookie('hash', value=hash)
             # returning the dashboard template
             return resp
 
+@app.route("/dashboard/<clicked_name>", methods=["GET"])
+@app.route("/dashboard")
+def dashboard(clicked_name=None):
+    if request.method == "GET":
+        if clicked_name:
+            resp = make_response(redirect("/dashboard"))
+            resp.set_cookie('name', value=clicked_name)
+            return resp
+        elif not request.cookies.get('name'):
+            data = db.execute("SELECT name FROM members WHERE family_id = ?", session['id'])
+            return render_template("whoYouAre.html", names=data)
+        else:
+            name = request.cookies.get('name').capitalize()
+            current_month = datetime.now().month
+            current_day = datetime.now().day
+            familyName = db.execute("SELECT name FROM account_info WHERE id = ?", session['id'])[0]['name']
+            if current_day < 24:
+                checkUpto = current_day + 7
+                dataUpcoming = db.execute("SELECT member_name, task, day, month, hour, minute FROM tasks WHERE family_name = ? AND month = ? AND day > ? AND day < ?", familyName, calendar.month_name[current_month], current_day, checkUpto)
+                dataNames = db.execute("SELECT name FROM members WHERE family_id = ?", session['id'])
+                return render_template("dashboard.html", name=checkUpto, dataNames=dataNames, dataUpcoming=dataUpcoming)
+            else:
+                checkUpto = 7 - (31 - current_day)
+                dataUpcoming = db.execute("SELECT member_name, task, day, month, hour, minute FROM tasks WHERE family_name = ? AND ((month = ? AND day > ? AND day < 31) OR (month = ? AND day < ?))", familyName, calendar.month_name[current_month], current_day, calendar.month_name[current_month + 1], checkUpto)
+                dataNames = db.execute("SELECT name FROM members WHERE family_id = ?", session['id'])
+                return render_template("dashboard.html", name=name, dataNames=dataNames, dataUpcoming=dataUpcoming)
+        
+
+@app.route("/new", methods=["GET", "POST"])
+def add():
+    if request.method == "GET":
+        return render_template("add.html")
+    else:
+        name = request.cookies.get('name')
+        family_name = request.cookies.get('user')
+        task = request.form.get('toBeRemembered')
+        month = request.form.get('month')
+        day = request.form.get('day')
+        hour = request.form.get('hour')
+        minute = request.form.get('minute')
+        db.execute("INSERT INTO tasks (family_name, member_name, task, month, day, hour, minute) VALUES (?, ?, ?, ?, ?, ?, ?)", family_name, name, task, month, day, hour, minute)
+        return redirect("/dashboard")
 
 
+@app.route("/see/<clicked_name>" , methods=['GET'])
+def see(clicked_name):
+    family_name = request.cookies.get('user')
+    data = db.execute("SELECT task, month, day, hour, minute FROM tasks WHERE family_name = ? AND member_name = ?", family_name, clicked_name)
+    return render_template("view.html", data=data, name=clicked_name)
 
 
 if __name__ == '__main__':

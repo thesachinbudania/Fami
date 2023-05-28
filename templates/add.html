@@ -1,0 +1,60 @@
+{% extends "layout.html" %} 
+
+{% block main %} 
+    <div class="row text-center mt-3">
+        <p style="font-size: 2em">Let's add a new <span class="text-primary"> To Be Reminded </span>for {{name}} </p>
+    </div>
+    <div class="row text-center" style="font-size: 2em;background-color: rgb(240, 240, 240); border: 5px solid #0d6efd; border-radius: 20px; box-shadow: 0 5px 8px rgba(0, 0, 0, 0.4);">
+        <form action="/new" method="post">
+            <div class="row text-center mb-3" style="font-size: 1.5em;">
+                <p>What to remind </p>
+            </div>
+            <div class="row text-center">
+                <input name="toBeRemembered" type="text" class="form-control mx-auto mb-4" style="border-radius: 60px; width: 90%; max-width: 800px; box-shadow: 0 5px 8px rgba(0, 0, 0, 0.6);" >
+            </div>
+            <div class="row text-center " style="font-size: 1.5em;">
+                <p>When to remind </p>
+            </div>
+            <div class="row text-center">
+                <select name="month" style="width:250px ;margin-left: 5%; margin-top: 5%">
+                    <option disable selected>--Month--</option>
+                    <option value="January">January</option>
+                    <option value="February">February</option>
+                    <option value="March">March</option>
+                    <option value="April">April</option>
+                    <option value="May">May</option>
+                    <option value="June">June</option>
+                    <option value="July">July</option>
+                    <option value="August">August</option>
+                    <option value="September">September</option>
+                    <option value="October">October</option>
+                    <option value="November">November</option>
+                    <option value="December">December</option>
+                </select>
+                <select name="day" style="width:250px; margin-left: 5%; margin-top: 5%">
+                    <option disabled selected>--Day--</option>
+                    {% for i in range(31) %} 
+                        <option value="{{i + 1}}">{{i + 1}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="row text-center">
+                <select name="hour" style="width:250px; margin-left: 5%; margin-top: 5%;">
+                    <option disabled selected>--Hour--</option>
+                    {% for i in range(12) %} 
+                        <option value="{{i + 1}}">{{i + 1}}</option>
+                    {% endfor %}
+                </select>
+                <select name="minute" style="width:250px; margin-left: 5%; margin-top: 5%;">
+                    <option disabled selected>--Minute--</option>
+                    {% for i in range(60) %} 
+                        <option value="{{i + 1}}">{{i + 1}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary mt-4 mb-4" style="border-radius:60px; width:300px;">Add</button>
+        </form>
+    </div>
+
+
+{% endblock %} 
