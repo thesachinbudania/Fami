@@ -1,8 +1,51 @@
-from flask import Flask, request, render_template, redirect, session, make_response
+from flask import Flask, request, render_template, redirect, session, make_response, send_from_directory
 from werkzeug.security import check_password_hash, generate_password_hash
 from cs50 import SQL
 from datetime import datetime
 import calendar
+from apscheduler.schedulers.background import BackgroundScheduler
+import smtplib
+import pytz
+
+# creating smtp session
+s = smtplib.SMTP('smtp.gmail.com' , 587)
+
+# setting the variable for scheduling the notifications
+notificationSchedule = BackgroundScheduler()
+
+
+# setting the function to check if it's time to send a notification
+def noticationChecker():
+    current_day = datetime.now(pytz.timezone('Asia/Kolkata')).day
+    current_month = calendar.month_name[datetime.now(pytz.timezone('Asia/Kolkata')).month]
+    current_hour = datetime.now(pytz.timezone('Asia/Kolkata')).hour
+    scheduled = db.execute("SELECT family_name, member_name, task FROM tasks WHERE month = ? AND day = ? AND hour = ?", current_month, current_day, current_hour)
+    if scheduled:
+        s.starttls()
+        s.login('withlovefami@gmail.com', 'ihntnsbxepiabadu')
+        for data in scheduled:    
+            headers = f"From: Fami\r\nSubject: Your family members need to be reminded"
+            message = f"\nHello there\nA general reminder that {data['member_name']} is to be reminded of {data['task']}\n\n\n\n\nWith \u2764 From Fami"
+            email_body = headers + message
+            email_body = email_body.encode('utf-8')
+            emails = db.execute("SELECT email FROM members JOIN account_info ON account_info.id = members.family_id WHERE account_info.name = ?", data['family_name'])
+            reciptents = []
+            for c in emails:
+                print(reciptents)
+                reciptents.append(c['email'])
+            s.sendmail('Fami', reciptents, email_body)
+        return
+    else:
+        return True
+
+
+# adding the job to the schedular to check in a given time fram for notifications
+notificationSchedule.add_job(noticationChecker, 'interval', hours=1)
+notificationSchedule.start()
+
+# starting the schedular
+# notificationSchedule.start()
+
 
 # setting global variables for the required things
 familyMembers = 0
@@ -156,17 +199,17 @@ def dashboard(clicked_name=None):
             return render_template("whoYouAre.html", names=data)
         else:
             name = request.cookies.get('name').capitalize()
-            current_month = datetime.now().month
-            current_day = datetime.now().day
+            current_month = datetime.now(pytz.timezone('Asia/Kolkata')).month
+            current_day = datetime.now(pytz.timezone('Asia/Kolkata')).day
             familyName = db.execute("SELECT name FROM account_info WHERE id = ?", session['id'])[0]['name']
             if current_day < 24:
                 checkUpto = current_day + 7
-                dataUpcoming = db.execute("SELECT member_name, task, day, month, hour, minute FROM tasks WHERE family_name = ? AND month = ? AND day > ? AND day < ?", familyName, calendar.month_name[current_month], current_day, checkUpto)
+                dataUpcoming = db.execute("SELECT member_name, task, day, month, hour, minute FROM tasks WHERE family_name = ? AND month = ? AND day > ? AND day < ? ORDER BY day, hour, minute", familyName, calendar.month_name[current_month], current_day - 1, checkUpto)
                 dataNames = db.execute("SELECT name FROM members WHERE family_id = ?", session['id'])
                 return render_template("dashboard.html", name=checkUpto, dataNames=dataNames, dataUpcoming=dataUpcoming)
             else:
                 checkUpto = 7 - (31 - current_day)
-                dataUpcoming = db.execute("SELECT member_name, task, day, month, hour, minute FROM tasks WHERE family_name = ? AND ((month = ? AND day > ? AND day < 31) OR (month = ? AND day < ?))", familyName, calendar.month_name[current_month], current_day, calendar.month_name[current_month + 1], checkUpto)
+                dataUpcoming = db.execute("SELECT member_name, task, day, month, hour, minute FROM tasks WHERE family_name = ? AND ((month = ? AND day > ? AND day < 31) OR (month = ? AND day < ?))", familyName, calendar.month_name[current_month], current_day - 1, calendar.month_name[current_month + 1], checkUpto)
                 dataNames = db.execute("SELECT name FROM members WHERE family_id = ?", session['id'])
                 return render_template("dashboard.html", name=name, dataNames=dataNames, dataUpcoming=dataUpcoming)
         
@@ -174,7 +217,8 @@ def dashboard(clicked_name=None):
 @app.route("/new", methods=["GET", "POST"])
 def add():
     if request.method == "GET":
-        return render_template("add.html")
+        name = request.cookies.get('name')
+        return render_template("add.html", name=name)
     else:
         name = request.cookies.get('name')
         family_name = request.cookies.get('user')
@@ -190,9 +234,26 @@ def add():
 @app.route("/see/<clicked_name>" , methods=['GET'])
 def see(clicked_name):
     family_name = request.cookies.get('user')
-    data = db.execute("SELECT task, month, day, hour, minute FROM tasks WHERE family_name = ? AND member_name = ?", family_name, clicked_name)
+    data = db.execute("SELECT task, month, day, hour, minute FROM tasks WHERE family_name = ? AND member_name = ? ", family_name, clicked_name)
     return render_template("view.html", data=data, name=clicked_name)
 
 
+@app.route("/deleteTask/<task>/<day>/<month>")
+def deleteTask(task, day, month):
+    name = request.cookies.get('name')
+    family_name = request.cookies.get('user') 
+    db.execute("DELETE FROM tasks WHERE task = ? AND month = ? AND day = ? AND family_name = ?", task, month, day, family_name)
+    return redirect(f'/see/{name}')
+
+
+@app.route('/docs')
+def docs():
+    return render_template('docs.html')
+
+
+@app.route('/manage')
+def manage():
+    return render_template('manage.html')
+
 if __name__ == '__main__':
-    app.run(debug = True)
+    app.run(debug = False)

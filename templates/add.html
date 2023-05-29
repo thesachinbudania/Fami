@@ -1,8 +1,13 @@
 {% extends "layout.html" %} 
 
+{% block title %}NEW TO BE REMINDED{% endblock%}
+
 {% block main %} 
     <div class="row text-center mt-3">
         <p style="font-size: 2em">Let's add a new <span class="text-primary"> To Be Reminded </span>for {{name}} </p>
+    </div>
+    <div class="row text-center mb-4" style="background-color: rgba(255, 193, 7, 0.7); border-left: 8px solid red; opacity: 0.8;">
+        <p style="padding-top: 5%; padding-bottom: 5%;"><b>NOTE:</b> Every member in your family will recieve a notification via email on the emails provided at the time of registration one hour prior to the scheduled time accordin to Asia/Kolkata time zone.</p>
     </div>
     <div class="row text-center" style="font-size: 2em;background-color: rgb(240, 240, 240); border: 5px solid #0d6efd; border-radius: 20px; box-shadow: 0 5px 8px rgba(0, 0, 0, 0.4);">
         <form action="/new" method="post">
@@ -41,7 +46,7 @@
             <div class="row text-center">
                 <select name="hour" style="width:250px; margin-left: 5%; margin-top: 5%;">
                     <option disabled selected>--Hour--</option>
-                    {% for i in range(12) %} 
+                    {% for i in range(24) %} 
                         <option value="{{i + 1}}">{{i + 1}}</option>
                     {% endfor %}
                 </select>
@@ -55,6 +60,5 @@
             <button type="submit" class="btn btn-primary mt-4 mb-4" style="border-radius:60px; width:300px;">Add</button>
         </form>
     </div>
-
 
 {% endblock %} 
