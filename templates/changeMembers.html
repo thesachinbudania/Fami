@@ -1,0 +1,24 @@
+{% extends "layout_manage.html" %} 
+
+{% block main %} 
+<div class="container-fluid justify-content-center" style="border-radius:40px; background-color:white;">
+    <div class="row text-center">
+        <span class="mt-2 mb-4">Currently you have the following members linked to your family account</span>
+    </div>
+    {% for c in names %} 
+        <div class="row m-3" style="font-size:1.5em;">
+            {{c['name']}}
+        </div>
+    {% endfor %}
+    <div class="row text-center">
+        <div class="col-lg-6">
+            <a href="{{url_for('changeMembers', option='add')}}" class="btn btn-primary mx-auto mb-4" style="width: 350px !important; border-radius: 60px; font-size: 1.3em;">Add a new member</a>
+        </div>
+        <div class="col-lg-6">
+            <a  href="{{url_for('changeMembers', option='remove')}}" class="btn btn-primary mx-auto mb-4" style="opacity: 0.8; width: 350px !important; border-radius: 60px; font-size: 1.3em;">Remove existing member</a>
+        </div>
+    </div>
+</div>
+   
+
+{% endblock %} 

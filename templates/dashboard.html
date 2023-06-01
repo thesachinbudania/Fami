@@ -9,7 +9,7 @@
     <div class="row justify-content-evenly">
         <div class="col-6 mb-5" style="min-width: 350px; background-color: white; border: 5px solid #0d6efd; border-radius: 20px; box-shadow: 0 5px 8px rgba(0, 0, 0, 0.4);">
             <div class="row text-center">
-                <p style="font-size: 2em;"> Upcoming <span class="text-primary"> To Be Reminded </span>In Your Family In The Next 7 Days</p>
+                <p style="font-size: 1.5em;"> Upcoming <span class="text-primary"> To Be Reminded </span>In Your Family In The Next 7 Days</p>
             </div>
                 {% if not dataUpcoming %}
                     <div class="row text-center" id="noTaskFound1">
@@ -37,7 +37,7 @@
                             </div>
                         </div>
                         <div class="col-2 text-center mt-5">
-                            <p><a href="{{ url_for('deleteTask', task=c['task'], day=c['day'], month=c['month']) }}"><img src="../static/delete.png" style="padding-right:8%;" height="60px" width="50px" alt="delete"></a></p>
+                            <p><a href="{{ url_for('deleteTask', task=c['task'], day=c['day'], month=c['month'], source='dashboard')}}"><img src="../static/delete.png" style="padding-right:8%;" height="60px" width="50px" alt="delete"></a></p>
                         </div>
                     </div>
                 {% endfor %}
@@ -45,7 +45,7 @@
         </div>
         <div class="col-4 text-center" style="min-width: 350px; background-color: white; border: 5px solid #0d6efd; border-radius: 20px; box-shadow: 0 5px 8px rgba(0, 0, 0, 0.4);">
                 <div class="row text-center">
-                    <p style="font-size: 2em;"> See <span class="text-primary"> To Be Reminded </span>For :</p>
+                    <p style="font-size: 1.5em;"> See <span class="text-primary"> To Be Reminded </span>For :</p>
                 </div>
                 {% for c in dataNames %} 
                     <div class="row text-center">
@@ -54,7 +54,7 @@
                 {% endfor %}
         </div>    
     </div>
-    <a href="/new" class="btn btn-primary" style="position:fixed; bottom: 20px; right: 20px;border-radius: 60px; border:5px solid white; box-shadow: 0 5px 8px rgba(0, 0, 0, 0.4);"><img src="../static/add.png" height="50px" width="50px" alt="add" style="margin-right: 10px;"><span style="color:white; font-size: 1.5em;">ADD</span> </a>
+    <a href="/new" class="btn btn-primary" style="position:fixed; bottom: 20px; right: 20px;border-radius: 60px; box-shadow: 0 5px 8px rgba(0, 0, 0, 0.4);"><img src="../static/add.png" height="50px" width="50px" alt="add" style="margin-right: 10px;"><span style="color:white; font-size: 1.2em;">ADD</span> </a>
 
 
 {% endblock %} 

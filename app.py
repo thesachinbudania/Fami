@@ -1,14 +1,12 @@
-from flask import Flask, request, render_template, redirect, session, make_response, send_from_directory
+from flask import Flask, request, render_template, redirect, session, make_response
 from werkzeug.security import check_password_hash, generate_password_hash
 from cs50 import SQL
-from datetime import datetime
+from datetime import datetime, timedelta
 import calendar
 from apscheduler.schedulers.background import BackgroundScheduler
 import smtplib
 import pytz
 
-# creating smtp session
-s = smtplib.SMTP('smtp.gmail.com' , 587)
 
 # setting the variable for scheduling the notifications
 notificationSchedule = BackgroundScheduler()
@@ -19,19 +17,22 @@ def noticationChecker():
     current_day = datetime.now(pytz.timezone('Asia/Kolkata')).day
     current_month = calendar.month_name[datetime.now(pytz.timezone('Asia/Kolkata')).month]
     current_hour = datetime.now(pytz.timezone('Asia/Kolkata')).hour
-    scheduled = db.execute("SELECT family_name, member_name, task FROM tasks WHERE month = ? AND day = ? AND hour = ?", current_month, current_day, current_hour)
+    current_minute = datetime.now(pytz.timezone('Asia/Kolkata')).minute
+    scheduled = db.execute("SELECT family_name, member_name, task FROM tasks WHERE month = ? AND day = ? AND hour = ? AND minute = ?", current_month, current_day, current_hour, current_minute + 1)
     if scheduled:
+        print("scheduled")
+        s = smtplib.SMTP('smtp.gmail.com' , 587)
         s.starttls()
         s.login('withlovefami@gmail.com', 'ihntnsbxepiabadu')
         for data in scheduled:    
-            headers = f"From: Fami\r\nSubject: Your family members need to be reminded"
-            message = f"\nHello there\nA general reminder that {data['member_name']} is to be reminded of {data['task']}\n\n\n\n\nWith \u2764 From Fami"
+            headers = "From: Fami\r\nSubject: Your family members need to be reminded"
+            message = f"\nHello there\nA general reminder that {data['member_name']} is to be reminded of {data['task']}\n\n\n\n\nNote: You are recieving this email because someone if not you added your email address as an email address of their family members knowingly or unknowingly\n\n\n\n\\n\n\n\nWith \u2764 From Fami"
             email_body = headers + message
             email_body = email_body.encode('utf-8')
             emails = db.execute("SELECT email FROM members JOIN account_info ON account_info.id = members.family_id WHERE account_info.name = ?", data['family_name'])
             reciptents = []
             for c in emails:
-                print(reciptents)
+                print(c['email'] + " Email sent")
                 reciptents.append(c['email'])
             s.sendmail('Fami', reciptents, email_body)
         return
@@ -40,7 +41,7 @@ def noticationChecker():
 
 
 # adding the job to the schedular to check in a given time fram for notifications
-notificationSchedule.add_job(noticationChecker, 'interval', hours=1)
+notificationSchedule.add_job(noticationChecker, 'interval', minutes=1)
 notificationSchedule.start()
 
 # starting the schedular
@@ -51,6 +52,7 @@ notificationSchedule.start()
 familyMembers = 0
 familyNameUq = ""
 memberNo = 0
+nameN = ""
 
 # initializing the app
 app = Flask(__name__)
@@ -181,8 +183,8 @@ def login():
             session['id'] = id
             # setting up the cookies so that the user don't need to login again
             resp = make_response(redirect("/dashboard"))
-            resp.set_cookie('user', value=user)
-            resp.set_cookie('hash', value=hash)
+            resp.set_cookie('user', value=user, expires=datetime.now() + timedelta(days=30))
+            resp.set_cookie('hash', value=hash, expires=datetime.now() + timedelta(days=30))
             # returning the dashboard template
             return resp
 
@@ -192,7 +194,7 @@ def dashboard(clicked_name=None):
     if request.method == "GET":
         if clicked_name:
             resp = make_response(redirect("/dashboard"))
-            resp.set_cookie('name', value=clicked_name)
+            resp.set_cookie('name', value=clicked_name, expires=datetime.now() + timedelta(days=30))
             return resp
         elif not request.cookies.get('name'):
             data = db.execute("SELECT name FROM members WHERE family_id = ?", session['id'])
@@ -204,12 +206,12 @@ def dashboard(clicked_name=None):
             familyName = db.execute("SELECT name FROM account_info WHERE id = ?", session['id'])[0]['name']
             if current_day < 24:
                 checkUpto = current_day + 7
-                dataUpcoming = db.execute("SELECT member_name, task, day, month, hour, minute FROM tasks WHERE family_name = ? AND month = ? AND day > ? AND day < ? ORDER BY day, hour, minute", familyName, calendar.month_name[current_month], current_day - 1, checkUpto)
+                dataUpcoming = db.execute("SELECT member_name, task, day, month, hour, minute FROM tasks WHERE family_name = ? AND month = ? AND day > ? AND day < ?", familyName, calendar.month_name[current_month], current_day - 1, checkUpto + 1)
                 dataNames = db.execute("SELECT name FROM members WHERE family_id = ?", session['id'])
-                return render_template("dashboard.html", name=checkUpto, dataNames=dataNames, dataUpcoming=dataUpcoming)
+                return render_template("dashboard.html", name=name, dataNames=dataNames, dataUpcoming=dataUpcoming)
             else:
                 checkUpto = 7 - (31 - current_day)
-                dataUpcoming = db.execute("SELECT member_name, task, day, month, hour, minute FROM tasks WHERE family_name = ? AND ((month = ? AND day > ? AND day < 31) OR (month = ? AND day < ?))", familyName, calendar.month_name[current_month], current_day - 1, calendar.month_name[current_month + 1], checkUpto)
+                dataUpcoming = db.execute("SELECT member_name, task, day, month, hour, minute FROM tasks WHERE family_name = ? AND ((month = ? AND day > ? AND day < 32) OR (month = ? AND day < ?))", familyName, calendar.month_name[current_month], current_day - 1, calendar.month_name[current_month + 1], checkUpto + 1)
                 dataNames = db.execute("SELECT name FROM members WHERE family_id = ?", session['id'])
                 return render_template("dashboard.html", name=name, dataNames=dataNames, dataUpcoming=dataUpcoming)
         
@@ -238,12 +240,17 @@ def see(clicked_name):
     return render_template("view.html", data=data, name=clicked_name)
 
 
-@app.route("/deleteTask/<task>/<day>/<month>")
-def deleteTask(task, day, month):
+@app.route("/deleteTask/<task>/<day>/<month>/<source>")
+def deleteTask(task, day, month, source):
     name = request.cookies.get('name')
     family_name = request.cookies.get('user') 
     db.execute("DELETE FROM tasks WHERE task = ? AND month = ? AND day = ? AND family_name = ?", task, month, day, family_name)
-    return redirect(f'/see/{name}')
+    if source == 'dashboard':
+      return redirect('/dashboard')
+    elif source == 'viewTask':  
+      return redirect(f'/see/{name}')
+    else :
+      return None
 
 
 @app.route('/docs')
@@ -255,5 +262,88 @@ def docs():
 def manage():
     return render_template('manage.html')
 
+@app.route('/changeMembers', methods = ['GET', 'POST'])
+@app.route('/changeMembers/<option>/<member>', methods = ['GET', 'POST'])
+@app.route('/changeMembers/<option>', methods = ['GET', 'POST'])
+def changeMembers(option=None, member=None):
+    names = db.execute("SELECT name FROM members WHERE family_id = ?", session['id'])
+    if request.method == 'GET':
+        if not option:
+            return render_template('changeMembers.html', names=names)
+        elif option == 'remove':
+            if not member:
+                return render_template('removeMember.html', names=names)
+            elif member:
+                db.execute('DELETE FROM members WHERE family_id = ? AND name = ?', session['id'], member)
+                db.execute("DELETE FROM tasks WHERE family_name = ? AND member_name = ?", request.cookies.get('user'), member)
+                return render_template('removeMember.html', names=names)
+        elif option == 'add':
+            if request.method == 'GET':
+                return render_template('addMember.html')
+    else:
+        name = request.form.get('name')
+        phoneNo = request.form.get('phoneNo')
+        email = request.form.get('email')
+        db.execute('INSERT INTO members(family_id, name, contact, email) VALUES (?, ?, ?, ?)', session['id'], name, phoneNo, email)
+        return render_template('addMember.html', message='Member added successfully')
+
+
+@app.route('/changeDetails', methods=['GET', 'POST'])
+@app.route('/changeDetails/<name>', methods=['GET', 'POST'])
+def changeDetails(name=None):
+    global nameN
+    if request.method == 'GET':
+        if not name:
+            names = db.execute("SELECT name FROM members WHERE family_id = ?", session['id'])
+            return render_template('changeDetails.html', members=names)
+        else:
+            data = db.execute('SELECT name, contact, email FROM members WHERE family_id = ? AND name = ?', session['id'], name)
+            nameN = data[0]['name']
+            return render_template('selectDetails.html', name=nameN, phone=data[0]['contact'], email=data[0]['email'])
+    else:
+        newName = request.form.get('newName')
+        newContact = request.form.get('newContact')
+        newEmail = request.form.get('newEmail')
+        db.execute('UPDATE members SET name = ?, email = ?, contact = ? WHERE name = ? AND family_id = ?', newName, newEmail, newContact, nameN, session['id'])
+        return render_template('selectDetails.html', message="Details updated successfully")
+
+
+@app.route('/resetPassword', methods=['GET', 'POST'])
+def resetPassword():
+    if request.method == 'GET':
+        return render_template('resetPassword.html')
+    else:
+        currentPassword = request.form.get('currentPassword')
+        newPassword = request.form.get('newPassword')
+        originalHash = db.execute("SELECT hash FROM account_info WHERE id = ?", session['id'])
+        if check_password_hash(originalHash[0]['hash'], currentPassword) == False:
+            return render_template('resetPassword.html', message="Please enter correct current password")
+        else:
+            db.execute('UPDATE account_info SET hash = ? WHERE id = ?', generate_password_hash(newPassword), session['id'])
+            return render_template('resetPassword.html', message="Password updated successfully")
+
+
+@app.route('/logout')
+def logout():
+    response = make_response(redirect('/'))
+    cookies = request.cookies
+    for cookie in cookies:
+        response.delete_cookie(cookie)
+    return response
+
+
+@app.route('/deleteAccount', methods=['GET', 'POST'])
+def deleteAccount():
+    if request.method == "GET":
+        return render_template('deleteAccount.html')
+    else:
+        password = request.form.get('password')
+        originalHash = db.execute('SELECT hash FROM account_info WHERE id = ?', session['id'])
+        if check_password_hash(originalHash[0]['hash'], password) == False:
+            return render_template('deleteAccount.html', info="Wrong Password")
+
+
+
+
 if __name__ == '__main__':
-    app.run(debug = False)
+    app.run(debug=False)

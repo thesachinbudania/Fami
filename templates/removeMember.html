@@ -1,0 +1,30 @@
+{% extends "layout_manage.html" %} 
+
+{% block main %} 
+<div class="container-fluid justify-content-center" style="border-radius:40px; background-color:white;">
+    <div class="row text-center">
+        <span>Which one of the members in your family you wish to remove</span>
+    </div>
+    {% for c in names %} 
+        <div class="row mt-3 text-center">
+            <p><buton onclick="removeSure()" class="btn btn-primary" style="border-radius:60px; width: 250px;">{{c['name']}}</button></p>
+        </div>   
+        <div class="row mt-3 mb-3" id="removeSure" style="display: none; background-color: rgba(220, 53, 69, 0.5);">
+            <div class="row">
+                <span>Are you sure you want to remove {{c['name']}} permanently from your family? This cannot be undone</span>
+            </div>
+            <div class="row text-center">
+                <p><a href="{{url_for('changeMembers', option='remove', member=c['name'])}}" class="btn-danger btn mt-3 mb-3" style="margin-right: 10px !important; border:5px solid white; width:250px; border-radius:15px"><img src="../static/danger.png" height="50px" width="50px" alt="danger"> Remove permanently</a></p>
+            </div>
+        </div>
+        <script>
+            function removeSure(){
+                document.getElementById('removeSure').style.display = 'block'
+            }
+        </script>
+    {% endfor %} 
+
+</div>
+   
+
+{% endblock %} 

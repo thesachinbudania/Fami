@@ -1,0 +1,44 @@
+{% extends "layout_manage.html" %} 
+
+{% block main %} 
+    <div class="container-fluid" style="background-color:white; border-radius:25px;">
+        <div class="row text-center" >
+            <p id="message" class="mt-4 mb-3" >{{message}}</p>
+        </div>
+        <form action="/changeDetails" method="post">
+            <div class="row text-center">
+                <span class="mt-5 mb-3">
+                    Current Name: {{name}}
+                <input required type='text' class="form-control" name="newName" placeholder=" New Name" style="width: 250px; border-radius:60px;">
+            </span>
+            </div>
+            <div class="row text-center">
+                <span class="mb-3">
+                    Current Contacts: {{phone}}
+                    <input required type="number" class="form-control" name="newContact" placeholder=" New Contacts" style="width: 250px; border-radius:60px;">
+                </span>    
+            </div>
+            <div class="row text-center">
+                <span class="mb-3">
+                    Current Email: {{email}}
+                    <input required name="newEmail" class="form-control" type="email" placeholder=" New Email" style="width: 250px; border-radius:60px;">
+                </span>    
+            </div>
+            <div class="row text-center">
+                <p><button type="submit" class="btn-primary btn mx-auto" style="border-radius:60px; width:250px">Change Details</button></p>
+            </div>
+        </form>
+
+    </div>
+    <script>
+        message = document.getElementById('message')
+        if (message.innerHTML != ""){
+            message.style.display='block';
+            message.style.backgroundColor='#0d6efd'
+            message.style.opacity='0.8'
+            message.style.padding='5%'
+            message.style.color='white'
+        }
+    </script>
+    
+{% endblock %} 
