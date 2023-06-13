@@ -14,7 +14,7 @@
                 <span>Are you sure you want to remove {{c['name']}} permanently from your family? This cannot be undone</span>
             </div>
             <div class="row text-center">
-                <p><a href="{{url_for('changeMembers', option='remove', member=c['name'])}}" class="btn-danger btn mt-3 mb-3" style="margin-right: 10px !important; border:5px solid white; width:250px; border-radius:15px"><img src="../static/danger.png" height="50px" width="50px" alt="danger"> Remove permanently</a></p>
+                <p><a onclick="showLoadingOverlay()" href="{{url_for('changeMembers', option='remove', member=c['name'])}}" class="btn-danger btn mt-3 mb-3" style="margin-right: 10px !important; border:5px solid white; width:250px; border-radius:15px"><img src="../static/danger.png" height="50px" width="50px" alt="danger"> Remove permanently</a></p>
             </div>
         </div>
         <script>

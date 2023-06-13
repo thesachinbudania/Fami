@@ -12,10 +12,10 @@
     {% endfor %}
     <div class="row text-center">
         <div class="col-lg-6">
-            <a href="{{url_for('changeMembers', option='add')}}" class="btn btn-primary mx-auto mb-4" style="width: 350px !important; border-radius: 60px; font-size: 1.3em;">Add a new member</a>
+            <a onclick="showLoadingOverlay()" href="{{url_for('changeMembers', option='add')}}" class="btn btn-primary mx-auto mb-4" style="width: 350px !important; border-radius: 60px; font-size: 1.3em;">Add a new member</a>
         </div>
         <div class="col-lg-6">
-            <a  href="{{url_for('changeMembers', option='remove')}}" class="btn btn-primary mx-auto mb-4" style="opacity: 0.8; width: 350px !important; border-radius: 60px; font-size: 1.3em;">Remove existing member</a>
+            <a onclick="showLoadingOverlay()" href="{{url_for('changeMembers', option='remove')}}" class="btn btn-primary mx-auto mb-4" style="opacity: 0.8; width: 350px !important; border-radius: 60px; font-size: 1.3em;">Remove existing member</a>
         </div>
     </div>
 </div>

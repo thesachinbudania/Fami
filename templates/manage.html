@@ -2,21 +2,27 @@
 
 {% block main %} 
   <div class="row mb-3 m-1" style="width:95%; background-color: white; border-radius:40px; box-shadow: 0 5px 8px rgba(0, 0, 0, 0.8); ">
-    <a href="/changeMembers" style="text-decoration: none; color: black;"><span style="padding:1% 0 1% 3%"><img src="../static/member.png" height="50px" width="50px" alt="member"> Add or remove family members</span></a>
+    <a href="/changeMembers" onclick="showLoadingOverlay()" style="text-decoration: none; color: black;"><span style="padding:1% 0 1% 3%"><img src="../static/member.png" height="50px" width="50px" alt="member"> <span id="optionOne">Add or remove family members</span> </span></a>
   </div>
   <div class="row mb-3 m-1" style="width:95%; margin-right:5% !important; background-color: white; border-radius:40px; box-shadow: 0 5px 8px rgba(0, 0, 0, 0.8); ">
-    <a href="/changeDetails" style="text-decoration:none; color:black;"> <span style="padding:1% 0 1% 3%"><img src="../static/change.png" height="50px" width="50px" alt="change"> Change details of a member</span></a>
+    <a href="/changeDetails" onclick="showLoadingOverlay()" style="text-decoration:none; color:black;"> <span style="padding:1% 0 1% 3%"><img src="../static/change.png" height="50px" width="50px" alt="change"><span id="optionTwo">Change Details of a member</span> </span></a>
   </div>
   <div class="row mb-3 m-1" style="width:95%; background-color: white; border-radius:40px; box-shadow: 0 5px 8px rgba(0, 0, 0, 0.8); ">
-    <a href="/resetPassword" style="text-decoration:none; color:black;"><span style="padding:1% 0 1% 3%"><img src="../static/password.png" height="50px" width="50px" alt="password">Reset password</span></a>
+    <a href="/resetPassword" onclick="showLoadingOverlay()" style="text-decoration:none; color:black;"><span style="padding:1% 0 1% 3%"><img src="../static/password.png" height="50px" width="50px" alt="password"><span id="optionThree">Change password</span> </span></a>
   </div>
   <div class="row mb-3 m-1" style="width:95%; background-color: white; border-radius:40px; box-shadow: 0 5px 8px rgba(0, 0, 0, 0.8); border:3px solid red; background-color: rgba(256, 0, 0, 0.2);">
-    <a href="/logout" style="text-decoration:none; color:black;"><span style="padding:1% 0 1% 3%"><img src="../static/logout.png" height="50px" width="50px" alt="logout">Logout</span></a>
+    <a href="/logout" onclick="showLoadingOverlay()" style="text-decoration:none; color:black;"><span style="padding:1% 0 1% 3%"><img src="../static/logout.png" height="50px" width="50px" alt="logout"><span id="optionFour">Logout</span> </span></a>
   </div>
   <div class="row mb-3 m-1" style="width:95%; background-color: white; border-radius:40px; box-shadow: 0 5px 8px rgba(0, 0, 0, 0.8); border:3px solid red; background-color: rgba(256, 0, 0, 0.2);">
-    <a href="/deleteAccount" style="text-decoration:none; color:black;"> <span style="padding:1% 0 1% 3%"><img src="../static/danger.png" height="50px" width="50px" alt="Delete">Delete account permanently</span></a>
+    <a href="/deleteAccount" onclick="showLoadingOverlay()" style="text-decoration:none; color:black;"> <span style="padding:1% 0 1% 3%"><img src="../static/danger.png" height="50px" width="50px" alt="Delete"><span id="optionFive">Delete account permanently</span> </span></a>
   </div>
-
+  <script>
+    if (window.innerWidth < 438){
+      document.getElementById('optionOne').innerHTML = '+/- Family Members';
+      document.getElementById('optionTwo').innerHTML = 'Change Details';
+      document.getElementById('optionFive').innerHTML = 'Delete Account';
+    }
+  </script>
 
 
 {% endblock %} 

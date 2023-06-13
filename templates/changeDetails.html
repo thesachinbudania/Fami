@@ -8,7 +8,7 @@
             </span>
             {% for c in members %} 
                 <div class="row text-center">
-                    <p><a href="{{url_for('changeDetails', name=c['name'])}}" class="btn btn-primary mx-auto" style="text-decoration:none; color:white; width:300px; border-radius:60px;">{{c['name']}}</a>
+                    <p><a onclick="showLoadingOverlay()" href="{{url_for('changeDetails', name=c['name'])}}" class="btn btn-primary mx-auto" style="text-decoration:none; color:white; width:300px; border-radius:60px;">{{c['name']}}</a>
                 </div>
             {% endfor %}
         </div>

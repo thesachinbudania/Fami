@@ -5,20 +5,20 @@
         <div class="row text-center" >
             <p id="message" class="mt-4 mb-3" >{{message}}</p>
         </div>
-        <form action="/changeDetails" method="post">
-            <div class="row text-center">
+        <form action="/changeDetails" method="post" id="form">
+            <div class="row">
                 <span class="mt-5 mb-3">
                     Current Name: {{name}}
                 <input required type='text' class="form-control" name="newName" placeholder=" New Name" style="width: 250px; border-radius:60px;">
             </span>
             </div>
-            <div class="row text-center">
+            <div class="row">
                 <span class="mb-3">
                     Current Contacts: {{phone}}
                     <input required type="number" class="form-control" name="newContact" placeholder=" New Contacts" style="width: 250px; border-radius:60px;">
                 </span>    
             </div>
-            <div class="row text-center">
+            <div class="row">
                 <span class="mb-3">
                     Current Email: {{email}}
                     <input required name="newEmail" class="form-control" type="email" placeholder=" New Email" style="width: 250px; border-radius:60px;">
@@ -39,6 +39,15 @@
             message.style.padding='5%'
             message.style.color='white'
         }
+        const form = document.getElementById('form');
+
+        form.addEventListener('submit', function(event) {
+            if (form.checkValidity()) {
+            // Form is valid, perform your task here
+                showLoadinOverlay();
+                form.submit()
+            }
+        });
     </script>
     
 {% endblock %} 

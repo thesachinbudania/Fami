@@ -1,6 +1,10 @@
-# Fami
-A simple app with many fulfillments for a family..
-In the first version the motive is to add a feature to help the family members of a family add some 'to be remembered things'
-and schedule a date and time of when those things are to be notified of.
-Then at the scheduled time every member of the family will receive a notification so that they can call the other member who
-needs to be remembered of the thing about the issue.
+#fami
+##url: https://youtu.be/gOr8AXaYryo
+###Description:
+I made the app after being troubled by the problem of my family forgetting things a lot. The app is a simple solution to that. In the app I use technologies namely flask, python, sqlite3, html, css, js. It provides all the necessary features such as login, registration and docs on the home page. You can consider visiting it at fami--thesachinbudani.repl.co 
+After the login process we are redirected to the dashboard and a session is created for each user for smooth flow without interruptions which containes the family id of the user. At the dashboard the user is given option to add a new task that need to be reminded to him via button present at the bottom of the screen. Moreover at the dashboard the user can see the upcoming things that needs to be reminded in his family in the next 7 days. He is also presented with a option to check the tasks for each family member differently. 
+After adding the task and scheduling a time for when to be reminded, the user can just rest in peace because an email will be sent to all his family members he registered at the time of registration via smtp including all the necessary details like the task and to whom it is to be reminded, so if not he himself someone else in his family will see the mail for sure and make him remind of the thing.
+There is a manage section at the dashboard which provided options to add or remove a new family member, change the details of existing members, change the password, logout(which esentially clears all the cookies and redirects to the home page), and a delete account forever button.
+The site uses cookies so that the user don't needs to login every time he enters the url and is automatically logged in.
+The ui is made easy for the users to navigate which uses bootstraps primary color #0d6efd as it's primary color and has all the necessary links on every page that the user might need. The app is divided into two parts one is  before login which provides links for things like login, registration, docs etc. and one is after login which removes all these extra links and adds a manage section where the user can manage his account.
+There is also a link to download the android app which is basically just a simple app with a splash screen and a webview embeded into it which opens the site in the app but still gives the feeling of an app to the user. I read some android studio docs and watched online tutorials to build the app as it was not part of cs50x.
