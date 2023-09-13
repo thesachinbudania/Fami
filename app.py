@@ -341,6 +341,13 @@ def deleteAccount():
         originalHash = db.execute('SELECT hash FROM account_info WHERE id = ?', session['id'])
         if check_password_hash(originalHash[0]['hash'], password) == False:
             return render_template('deleteAccount.html', info="Wrong Password")
+        else:
+            try:
+                db.execute("DELETE FROM account_info WHERE id=?", session['id'])
+                return redirect('/')
+            except:
+                return render_template('deleteAccount.html', info='Something went wrong! Please try again')
+            
 
 
 
