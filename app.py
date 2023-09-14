@@ -343,11 +343,10 @@ def deleteAccount():
             return render_template('deleteAccount.html', info="Wrong Password")
         else:
             try:
-                db.execute("DELETE FROM account_info WHERE id=?", session['id'])
+                db.execute('DELETE FROM account_info WHERE id = ?', session['id'])
                 return redirect('/')
             except:
                 return render_template('deleteAccount.html', info='Something went wrong! Please try again')
-            
 
 
 
