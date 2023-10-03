@@ -60,4 +60,4 @@ jobs:
         with:
           app-name: 'famiByBudania'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_640BF48B0005488BBBC1C85F61B61B7B }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_9717D63DFCDA4AA4A3F0EF653B79B197 }}
