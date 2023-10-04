@@ -348,8 +348,8 @@ def deleteAccount():
             except:
                 return render_template('deleteAccount.html', info='Something went wrong! Please try again')
 
-@app.route('/analAbhinav')
-def analAbhinav():
+@app.route('/legendAbhinav')
+def legendAbhianv():
     return render_template('analAbhinav.html')
 
 
