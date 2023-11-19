@@ -6,6 +6,10 @@ import calendar
 from apscheduler.schedulers.background import BackgroundScheduler
 import smtplib
 import pytz
+import os
+
+basedir = os.path.abspath(os.path.dirname(__file__))
+db_file = os.path.join(basedir, 'fami.db')
 
 
 # setting the variable for scheduling the notifications
@@ -61,7 +65,7 @@ app = Flask(__name__)
 app.secret_key = "Tattiiykk"
 
 # initalizing the database
-db = SQL("sqlite:///fami.db")
+db = SQL(f"sqlite:///{db_file}")
 
 
 # the root page which return the home page if the user never logged in or the dashboard by using cookies
